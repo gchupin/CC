@@ -1,0 +1,42 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+
+\title{DevoirMaison1}
+\author {CHUPIN Guillaume et PILLEUX Julien}
+
+\begin{document}
+\maketitle
+\thispagestyle {empty}
+\newpage
+\tableofcontents
+\newpage
+
+\section {HAC est NP-difficile}
+\begin {itemize}
+\item Une réduction polynomiale du problème chemin hamiltonien vers le problème HAC serait de prendre le début de notre chemin hamiltonien comme la racine de l'abre et comme fils le suivant dans le chemin et ainsi de suite (on obtiendra un arbre couvrant en forme de ligne et de hauteur la taille du chemin hamiltonien).
+\item Le problème chemin hamiltonien étant NP-complet on en conclut que HAC est NP-difficile (car les réduction polynomiale sont transitive et que tout problème NP peut se réduire polynomialement en chemin hamiltonien, car il est NP complet)
+\end {itemize}
+\section {Réduction de HAC vers SAT}
+\begin {enumerate}
+\item Pour chaque sommet v $\in$ V, il y a un unique entier h tq $x_{v,h}$ est vrai:
+  \[
+  \bigwedge_{v \in V}\bigvee_{h=0}^nx_{v,h} \wedge\bigwedge_{h\neq k}(\neg x_{v,h} \vee \neg x_{v,k})
+  \]
+\item Il y a un unique sommet v tq d(v) = 0 (``v est la racine''):
+  \[
+  \bigvee_{v\in V}x_{v,0} \wedge \bigwedge_{v\neq w}(\neg x_{v,0} \vee \neg x_{w,0})
+  \]
+\item Il y a au moins un sommet v tq d(v) = k:
+  \[
+  \bigvee_{v\in V}x_{v,k}
+  \]
+\item Pour chaque sommet v, si d(v) > 0, alors il existe un sommet u tel que uv $\in$ E et d(u) = d(v) - 1 (``le sommet u est un parent potentiel de v dans l'arbre''):
+  \[
+  \bigwedge_{v\in V}\bigvee_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \wedge x_{u,h-1})
+  \]
+  
+\end {enumerate}
+\end{document}

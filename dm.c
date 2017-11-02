@@ -16,7 +16,7 @@ void p_litteral (int l)
  * La formule SAT est écrite dans le terminal par défault
  * Il faudra donc la rediriger vers un fichier si besoin.
  */
-void graphe_to_sat (int k)
+void graphe_to_sat (int profondeur)
 {
   printf ("c\nc start with comments\nc\nc\n");  // Commentaires
   int size = orderG ();                         // Nombre de sommets du graphe
@@ -29,9 +29,9 @@ void graphe_to_sat (int k)
 
   /* Sum 1 -> size -1 */
   int sum = 0;
+  int k = profondeur + 1;
   for (i = 1; i < k; ++i)
       sum += i;
-
   nb_clauses =  (size + (pow(k, 2)*size - size*k - sum*size) + (pow(size, 2) - size) + k + (size*(k-1)));
   printf ("p cnf %d %d\n", size*k, nb_clauses);         // Littéraux  !TODO
 
@@ -124,7 +124,7 @@ void graphe_to_sat (int k)
 * Convertit la valuation retourné par le solveur en HAC
 * La valuation doit être écrite dans un fichier nommé val
 */
-void val_to_hac ()
+void val_to_hac (int k)
 {
   FILE* val = NULL;
   val = fopen ("val", "r");
@@ -133,23 +133,31 @@ void val_to_hac ()
     fprintf (stderr, "Impossible d'ouvrir le fichier val\n");
     exit(EXIT_FAILURE);
   }
-  printf ("test\n");
-  int cpt;
+  int cpt = 0;
+  int taille = 1024;
   int size = orderG();
   int tab[size];
   int caractereActuel;
-  do {
-      caractereActuel = fgetc (val);
-      if (caractereActuel != ' ' && caractereActuel != EOF)
+  while (1)
+    {
+      int ret = fscanf (val, "%d", &caractereActuel);
+      if (ret == EOF)
+        break;
+      if (caractereActuel > 0)
         {
-          tab[cpt] = caractereActuel;
+          tab [cpt] = caractereActuel;
           ++cpt;
         }
-  } while(caractereActuel != EOF);
-  for (int i = 0; i < size; ++i)
-  {
-    printf ("%d\n", tab[i]);
-  }
+    }
+    int h = 1;
+  //  printf("sommet: %d a la hauteur: %d\n",  tab[i]/k, tab[i]);
+    ++k;
+    for (int i = 0; i < size; ++i)
+      {
+        printf ("sommet: %d a la profondeur: %d\n", tab[i]/k, tab[i]-h);
+        h += k;
+      }
+    fclose (val);
 }
 
 int main(int argc, char* argv [])
@@ -162,10 +170,15 @@ int main(int argc, char* argv [])
     }
   else if (argc == 2)
   {
-    if (strcmp (argv[1], "val") == 0)
-      val_to_hac ();
-    else
-      graphe_to_sat (atoi (argv [1]));
+      if (strcmp (argv[1], "help") == 0)
+        printf("Utilisez './dm k' pour convertir le graphe en formule sat de HAC de hauteur k\nSinon utilisez './dm v k' pour avoir HAC en fonction du retour du solveur(v) contenu dans le fichier val et de la hauteur(k)");
+      else
+        graphe_to_sat (atoi (argv [1]));
+  }
+  else if (argc == 3)
+  {
+    if (strcmp (argv[1], "v") == 0)
+      val_to_hac (atoi (argv[2]));
   }
   return EXIT_SUCCESS;
 }

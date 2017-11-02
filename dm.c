@@ -214,11 +214,16 @@ void val_to_hac (int k)
         }
     }
     int h = 1;
-  //  printf("sommet: %d a la hauteur: %d\n",  tab[i]/k, tab[i]);
     ++k;
+    int sommet, profondeur;
+  //  printf("sommet: %d a la hauteur: %d\n",  tab[i]/k, tab[i]);
     for (int i = 0; i < size; ++i)
       {
-        printf ("sommet: %d a la profondeur: %d\n", tab[i]/k, tab[i]-h);
+	profondeur = tab[i] - h;
+	sommet = tab[i]/k;
+	if (profondeur == (k-1))
+	  --sommet;
+        printf ("sommet: %d a la profondeur: %d\n", sommet, profondeur);
         h += k;
       }
     fclose (val);

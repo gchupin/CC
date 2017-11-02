@@ -22,8 +22,8 @@ void hac_to_sat (int k)
   int size = orderG ();                         // Nombre de sommets du graphe
   
   /*Pour l'affichage des littéraux(de la forme nk avec n numéro de sommet et k une profondeur)*/
-  int m = (int)log10(k) + 1;
-  m = pow(10, m);
+  //int m = (int)log10(k) + 1;
+  //m = pow(10, m);
   
   int i, u, v, w, h, l, nb_clauses;             // Compteurs
 
@@ -35,99 +35,113 @@ void hac_to_sat (int k)
   printf ("p cnf %d %d\n", size*k, nb_clauses);         // Littéraux  !TODO
  
   /* Il existe au moins une hauteur par sommet */
-  for (v = 1; v <= size; ++v) //nb_clause: size
+  for (v = 0; v < size; ++v) //nb_clause: size
     {
       for (h = 0; h < k; ++h)
-	p_litteral (v*m+h);
+	p_litteral (k*v+h+1);
+      ++cpt;
       printf ("0\n");                            // Fin de ligne
     }
   
   /* Il existe au plus une hauteur par sommet */
-  for (v = 1; v <= size; ++v)                   //nb_clause: size² - size - somme(1 à size-1)
+  for (v = 0; v < size; ++v)                   //nb_clause: size² - size - somme(1 à size-1)
     for (h = 0; h < k; ++h)
       for (l = h+1; l < k; ++l)                 //optimisation
 	if (l != h)
 	  {
-	    p_litteral (-(v*m+h));
-	    p_litteral (-(v*m+l));
+	    p_litteral (-(k*v+h+1));
+	    p_litteral (-(k*v+l+1));
+	    ++cpt;
 	    printf ("0\n");                     // Fin de ligne
 	  }
   
   /* Il existe un unique sommet v tel que d(v) = 0 */
-  for (v = 1; v <= size; ++v)
-    for (u = 1; u <= size; ++u) // nb_clauses : size² - size
+  for (v = 0; v < size; ++v)
+    for (u = 0; u < size; ++u) // nb_clauses : size² - size
       if (u != v)
 	{
-	  p_litteral (-v*m);
-	  p_litteral (-u*m);
+	  p_litteral (-(v*k+1));
+	  p_litteral (-(u*k+1));
+	  ++cpt;
 	  printf ("0\n");                       // Fin de ligne
 	}
   
   /* Il existe au moins un sommet v tel que d(v) = k */
   for (h = 0; h < k; ++h) //nb_clause: k
     {
-    for (v = 1; v <= size; ++v)
-      p_litteral(v*m+h);
+    for (v = 0; v < size; ++v)
+      p_litteral(k*v+h+1);
+    ++cpt; 
     printf("0\n");
     }
 
   /* 1 */
-  for (v = 1; v <= size; ++v)//nb sommets
-    for (u = 1; u <= size; ++u) 
-      if (are_adjacent (u-1, v-1))
-	{
-	  for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
+  for (v = 0; v < size; ++v)//nb sommets
+    for (u = 0; u < size; ++u)
+      if (u != v)
+	if (are_adjacent (u, v))
 	    {
-	      p_litteral (v*m+h);
-	      p_litteral (u*m+(h-1));	   
+	      for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
+		{
+		  p_litteral (k*v+h+1);
+		  p_litteral (k*u+h);		  
+		  ++cpt;
+		  printf ("0\n");
+		}
 	    }
-	     printf ("0\n");
-	}
+
 
   /* 2 */
-  for (v = 1; v <= size; ++v)//nb sommets
-    for (u = 1; u <= size; ++u) 
-      if (are_adjacent (u-1, v-1))
+  for (v = 0; v < size; ++v)//nb sommets
+    for (u = 0; u < size; ++u)
+      if (u != v)
+	if (are_adjacent (u, v))
+	  {
+	    for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
+		{
+		  p_litteral (-(k*v+h+1));
+		  p_litteral (k*u+h);
+		  ++cpt;
+		  printf ("0\n");
+		}
+	  }
+
+/* 3 */
+  for (v = 0; v < size; ++v)//nb sommets
+    for (u = 0; u < size; ++u)
+      if (u != v)
 	{
-	  for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
+	  if (are_adjacent (u, v))
 	    {
-	      p_litteral (-(v*m+h));
-	      p_litteral (u*m+(h-1));	      
+	      for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
+		{
+		  p_litteral (k*v+h+1);
+		  p_litteral (-(k*u+h));
+		  ++cpt;
+		  printf ("0\n");
+		}
 	    }
-	  printf ("0\n");
 	}
   
-  /* 3 */
-  for (v = 1; v <= size; ++v)//nb sommets
-    for (u = 1; u <= size; ++u) 
-      if (are_adjacent (u-1, v-1))
-	{
-	  for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
-	    {
-	      p_litteral (v*m+h);
-	      p_litteral (-(u*m+(h-1)));	      
-	    }
-	  printf ("0\n");
-	 }
-  
   /* 4 */
-  int zeub = 0;
-  for (v = 1; v <= size; ++v)//nb sommets
-    for (u = 1; u <= size; ++u) 
-      for (w = 1; w <= size; ++w)
+  for (v = 0; v < size; ++v)//nb sommets
+    for (u = 0; u < size; ++u) 
+      for (w = 0; w < size; ++w)
 	{
 	  if (w != u && u != v)
-	    if (are_adjacent (v-1, u-1) && are_adjacent (v-1, w-1))
+	    if (are_adjacent (v, u) && are_adjacent (v, w))
 	      {
 		for (h = 1; h < k; ++h)
 		  {
-		    p_litteral (-(v*m+h));
-		    p_litteral (-(u*m+(h-1)));
-		    p_litteral (-(w*m+(h-1)));
+		    p_litteral (-(k*v+h+1));
+		    p_litteral (-(k*u+(h)));
+		    p_litteral (-(k*w+(h)));
+		    ++cpt;
+		    printf ("0\n");
 		  }
-		printf ("0\n");
 	      }
 	}
+  printf ("cpt = %d", cpt);
   /*
     /* sommet u parent potentiel de v dans l'arbre 
     for (i = 1; i <= size; ++i)
@@ -153,7 +167,11 @@ int main(int argc, char* argv [])
       fprintf (stderr, "Il faut 1 unique argument(l'entier k).\n");
       exit (EXIT_FAILURE);
     }
-  
-  hac_to_sat (atoi(argv [1]));
+  int k = atoi (argv [1]);
+  int n = orderG();
+  if (k < n/2 || k > n - 1)
+    printf( "Il n'éxiste pas d'arbre couvrant de profondeur %d", k);
+  else
+    hac_to_sat (atoi (argv [1]));
   return EXIT_SUCCESS;
 }

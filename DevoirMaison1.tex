@@ -23,7 +23,7 @@
 \begin {enumerate}
 \item Pour chaque sommet v $\in$ V, il y a un unique entier h tq $x_{v,h}$ est vrai:
   \[
-  \bigwedge_{v \in V}\bigvee_{h=0}^nx_{v,h} \wedge\bigwedge_{h\neq k}(\neg x_{v,h} \vee \neg x_{v,k})
+  \bigwedge_{v \in V}\bigvee_{h=0}^nx_{v,h} \wedge\bigwedge_{v\in V}\bigwedge_{h\neq k}(\neg x_{v,h} \vee \neg x_{v,k})
   \]
 \item Il y a un unique sommet v tq d(v) = 0 (``v est la racine''):
   \[
@@ -31,11 +31,24 @@
   \]
 \item Il y a au moins un sommet v tq d(v) = k:
   \[
-  \bigvee_{v\in V}x_{v,k}
+  \bigwedge_{k=0}^{n}\bigvee_{v\in V}x_{v,k}
   \]
 \item Pour chaque sommet v, si d(v) > 0, alors il existe un sommet u tel que uv $\in$ E et d(u) = d(v) - 1 (``le sommet u est un parent potentiel de v dans l'arbre''):
   \[
-  \bigwedge_{v\in V}\bigvee_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \wedge x_{u,h-1})
+  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \vee x_{u,h-1})
+  \]
+   \[
+  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(\neg x_{v,h} \vee x_{u,h-1})
+  \]
+   \[
+  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \vee \neg x_{u,h-1})
+  \]
+   \[
+  \bigwedge_{v\in V}\bigwedge_{u\neq w}^{uv\in E \wedge wv\in E}\bigvee_{h=1}^n(\neg x_{v,h} \vee \neg x_{u,h-1} \neg x_{w,h-1})
+  \]
+  mabite
+  \[
+  \bigwedge_{v \in V}\bigvee_{h=1}^{n} x_{v,h} \wedge \bigwedge_{u \in V}^{uv \in E}\bigvee_{l=h-1} x_{u,l}
   \]
   
 \end {enumerate}

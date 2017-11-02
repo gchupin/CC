@@ -76,53 +76,26 @@ void hac_to_sat (int k)
     }
 
   /* 1 */
+  int print = 0;
   for (v = 0; v < size; ++v)//nb sommets
-    for (u = 0; u < size; ++u)
-      if (u != v)
-	if (are_adjacent (u, v))
-	    {
-	      for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
-		{
-		  p_litteral (k*v+h+1);
-		  p_litteral (k*u+h);		  
-		  ++cpt;
-		  printf ("0\n");
-		}
-	    }
-
-
-  /* 2 */
-  for (v = 0; v < size; ++v)//nb sommets
-    for (u = 0; u < size; ++u)
-      if (u != v)
-	if (are_adjacent (u, v))
-	  {
-	    for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
-		{
-		  p_litteral (-(k*v+h+1));
-		  p_litteral (k*u+h);
-		  ++cpt;
-		  printf ("0\n");
-		}
-	  }
-
-/* 3 */
-  for (v = 0; v < size; ++v)//nb sommets
-    for (u = 0; u < size; ++u)
-      if (u != v)
-	{
+    for (h = 1; h < k; ++h)
+      {
+	p_litteral (-(k*v+h+1));
+	for (u = 0; u < size; ++u)
 	  if (are_adjacent (u, v))
 	    {
-	      for (h = 1; h < k; ++h) //nb_clauses : 2 * sizeG()
-		{
-		  p_litteral (k*v+h+1);
-		  p_litteral (-(k*u+h));
-		  ++cpt;
-		  printf ("0\n");
-		}
+	      //nb_clauses : 2 * sizeG()
+	      print = 1;
+	      
+	      p_litteral (k*u+h);
 	    }
-	}
-  
+	if (print)
+	  {
+	    ++cpt;
+	    printf ("0\n");
+	    print = 0;
+	  }
+      }
   /* 4 */
   for (v = 0; v < size; ++v)//nb sommets
     for (u = 0; u < size; ++u) 

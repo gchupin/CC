@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "all.h"
@@ -132,6 +133,7 @@ void val_to_hac ()
     fprintf (stderr, "Impossible d'ouvrir le fichier val\n");
     exit(EXIT_FAILURE);
   }
+  printf ("test\n");
   int cpt;
   int size = orderG();
   int tab[size];
@@ -160,7 +162,7 @@ int main(int argc, char* argv [])
     }
   else if (argc == 2)
   {
-    if (argv[1] == "h")
+    if (strcmp (argv[1], "val") == 0)
       val_to_hac ();
     else
       graphe_to_sat (atoi (argv [1]));

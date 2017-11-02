@@ -31,7 +31,7 @@ void hac_to_sat (int k)
   int sum = 0;
   for (i = 1; i < size; ++i, sum += i);
 
-  nb_clauses =  (size + (pow(size, 2) - size - sum) + (pow(size, 2) - size) + k + 8 * sizeG());
+  nb_clauses =  (size + (pow(size, 2) - size - sum) + (pow(size, 2) - size) + k + );
   printf ("p cnf %d %d\n", size*k, nb_clauses);         // Littéraux  !TODO
  
   /* Il existe au moins une hauteur par sommet */
@@ -42,7 +42,7 @@ void hac_to_sat (int k)
       ++cpt;
       printf ("0\n");                            // Fin de ligne
     }
-  
+   printf ("cpt = %d", cpt);
   /* Il existe au plus une hauteur par sommet */
   for (v = 0; v < size; ++v)                   //nb_clause: size² - size - somme(1 à size-1)
     for (h = 0; h < k; ++h)
@@ -54,7 +54,7 @@ void hac_to_sat (int k)
 	    ++cpt;
 	    printf ("0\n");                     // Fin de ligne
 	  }
-  
+   printf ("cpt = %d", cpt);
   /* Il existe un unique sommet v tel que d(v) = 0 */
   for (v = 0; v < size; ++v)
     for (u = 0; u < size; ++u) // nb_clauses : size² - size
@@ -65,7 +65,7 @@ void hac_to_sat (int k)
 	  ++cpt;
 	  printf ("0\n");                       // Fin de ligne
 	}
-  
+   printf ("cpt = %d", cpt);
   /* Il existe au moins un sommet v tel que d(v) = k */
   for (h = 0; h < k; ++h) //nb_clause: k
     {
@@ -84,7 +84,6 @@ void hac_to_sat (int k)
 	for (u = 0; u < size; ++u)
 	  if (are_adjacent (u, v))
 	    {
-	      //nb_clauses : 2 * sizeG()
 	      print = 1;
 	      
 	      p_litteral (k*u+h);
@@ -96,7 +95,8 @@ void hac_to_sat (int k)
 	    print = 0;
 	  }
       }
-  /* 4 */
+   printf ("cpt = %d", cpt);
+  /* 4 
   for (v = 0; v < size; ++v)//nb sommets
     for (u = 0; u < size; ++u) 
       for (w = 0; w < size; ++w)
@@ -113,23 +113,8 @@ void hac_to_sat (int k)
 		    printf ("0\n");
 		  }
 	      }
-	}
-  printf ("cpt = %d", cpt);
-  /*
-    /* sommet u parent potentiel de v dans l'arbre 
-    for (i = 1; i <= size; ++i)
-      for (j= 1; j <= size; ++j)
-	if (are_adjacent (j-1, i-1))
-	  {
-	    for (n = 1; n < k; ++n) //nb_clauses : 2 * sizeG()
-	      {
-		p_litteral (-(i*m+n));
-		p_litteral (-(j*m+(n-1)));
-	      }
-	    printf ("0\n");
-	  }
-  // printf ("nb clauses : %d\n", nb_clauses); // A enlever
-  */
+	}*/
+ 
 }
 
 int main(int argc, char* argv [])

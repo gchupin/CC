@@ -5,6 +5,75 @@
 
 #include "all.h"
 
+typedef struct ListSommet
+{
+    int sommet;
+    struct ListSommet* suivant;
+}Sommet;
+
+typedef struct PileSommet
+{
+  Sommet* debut;
+  int taille;
+}Pile;
+
+void initialisation (Pile* pile)
+{
+  pile->debut = NULL;
+  pile->taille = 0;
+}
+
+int empiler (Pile* pile, int sommet)
+{
+  Sommet* nouveau_sommet;
+  if ((nouveau_sommet = (Sommet *) malloc (sizeof (Sommet))) == NULL)
+    return -1;
+  nouveau_sommet->sommet = sommet;
+  nouveau_sommet->suivant = pile->debut;
+  pile->debut = nouveau_sommet;
+  ++pile->taille;
+  return 0;
+}
+
+int depiler (Pile* pile)
+{
+  if (pile->taille == 0)
+    return -1;
+  Sommet* supp_sommet = pile->debut;
+  int ret = supp_sommet->sommet;
+  pile->debut = pile->debut->suivant;
+  free (supp_sommet);
+  --pile->taille;
+  return ret;
+}
+
+int connexe ()
+{
+  Pile* pile = (Pile*) malloc(sizeof (Pile));
+  initialisation (pile);
+  int size = orderG ();
+  int marque[size];
+  for (int i = 0; i < size; ++i)
+    marque[i] = 0;
+  marque[0] = 1;
+  empiler (pile, 0);
+  int s;
+  while ((s = depiler (pile)) != -1)
+  {
+    for (int i = 0; i < size; ++i)
+      if (are_adjacent (s, i))
+        if (marque [i] == 0)
+          {
+            empiler (pile, i);
+            marque [i] = 1;
+          }
+  }
+  free (pile);
+  for (int i = 0; i < size; ++i)
+    if (marque [i] == 0)
+      return 0;
+  return 1;
+}
 /* Print un littéral */
 void p_litteral (int l)
 {
@@ -18,6 +87,11 @@ void p_litteral (int l)
  */
 void graphe_to_sat (int profondeur)
 {
+  if (connexe() == 0)
+  {
+    fprintf(stderr, "Le graphe n'est pas connexe donc ne posséde aucun arbre couvrant\n");
+    exit (EXIT_FAILURE);
+  }
   printf ("c\nc start with comments\nc\nc\n");  // Commentaires
   int size = orderG ();                         // Nombre de sommets du graphe
 
@@ -71,7 +145,6 @@ void graphe_to_sat (int profondeur)
 
   /* 1 */
   int print = 0;
-  int nb_nonVoisin = 0;
   for (v = 0; v < size; ++v)
     for (h = 1; h < k; ++h)//nb_clause: size*(k-1)
       {
@@ -83,20 +156,11 @@ void graphe_to_sat (int profondeur)
 
 	      p_litteral (k*u+h);
 	    }
-      else
-        ++ nb_nonVoisin;
 	if (print)
 	  {
 	    printf ("0\n");
 	    print = 0;
 	  }
-    //Si le sommet n'a pas de voisin alors unsat
-    if (nb_nonVoisin == size)
-    {
-        nb_nonVoisin = 0;
-        p_litteral (k*v+h+1);
-        printf ("0\n");
-    }
   }
 
   /* 4

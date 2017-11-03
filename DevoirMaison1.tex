@@ -16,7 +16,7 @@
 
 \section {HAC est NP-difficile}
 \begin {itemize}
-\item Une réduction polynomiale du problème chemin hamiltonien vers le problème HAC serait de prendre le début de notre chemin hamiltonien comme la racine de l'abre et comme fils le suivant dans le chemin et ainsi de suite (on obtiendra ainsi un arbre couvrant en forme de ligne et de hauteur la taille du chemin hamiltonien).
+\item Une réduction polynomiale du problème chemin hamiltonien vers le problème HAC serait de prendre le début de notre chemin hamiltonien comme la racine de l'arbre et comme fils le suivant dans le chemin et ainsi de suite (on obtiendra ainsi un arbre couvrant en forme de ligne et de hauteur la taille du chemin hamiltonien).
 \item Le problème chemin hamiltonien étant NP-complet on en conclut que HAC est NP-difficile (car les réductions polynomiale sont transitive et que tout problèmes NP peut se réduire polynomialement en chemin hamiltonien, car il est NP complet)
 \end {itemize}
 \section {Réduction de HAC vers SAT}
@@ -45,7 +45,7 @@
 \newpage
 Toute ces clauses nous garantissent d'avoir la réduction de sat vers HAC, car on a bien une seul racine, puis il y a au moins 1 sommet sur toute les profondeurs
 recherché, ensuite chaque sommet du graphe est dans l'arbre et chaque arrête de l'arbre correspond bien a une arrête du graphe.\newline
-De plus, la réduction est polynomiale, car chaque clause est bornée par un polynome.\newline
+De plus, la réduction est polynomiale, car chaque clause est bornée par un polynôme.\newline
 En effet:
 \begin {itemize}
 \item La première clause est bornée par le nombre de sommet.
@@ -56,9 +56,9 @@ En effet:
 \end {itemize}
 
 \section {Optimisations}
-Une optimisation utilisé pour la 2ème clause, est de prendre k~>~h (ainsi on ne traite pas deux fois le même couple de litteraux). On peut aussi résuire le nombre de litteraux de la 5ème clause en n'affichant qu'une fois le litteral $\neg x_{v,h}$.\newline
+Une optimisation utilisé pour la 2ème clause, est de prendre k~>~h (ainsi on ne traite pas deux fois le même couple de littéraux). On peut aussi réduire le nombre de littéraux de la 5ème clause en n'affichant qu'une fois le littéral $\neg x_{v,h}$.\newline
 Une optimisation utilisé dans le code, est de faire un parcours en profondeur, pour tester si le graphe est connexe et si il ne l'est pas, on ne fait pas la réduction, car il ne peut pas y avoir d'arbre couvrant dans un graphe qui n'est pas connexe.
-On teste aussi que la profondeur, rentré par l'utilisateur, soit inférieur au nombre de sommet du graphe (car un graphe ne peut pas avoir un arbre couvrant de profondeur supérieur à sont nombre de sommet).
+On teste aussi que la profondeur, rentré par l'utilisateur, soit inférieur au nombre de sommet du graphe (car un graphe ne peut pas avoir un arbre couvrant de profondeur supérieur à son nombre de sommet).
 
 
 \end{document}

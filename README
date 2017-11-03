@@ -1,5 +1,8 @@
 Premier DM de CC
 Compiler avec gcc -lm dm.c [fichier c du graphe a tester] -o dm
-Utiliser ./dm k pour avoir la formule sat traduisant un arbre couvrant de hauteur k dans le graphe. Si le graphe n'est pas connexe il n'a pas de formule sat car il ne peut pas y avoir d'arbre couvrant. Rediriger la sortie de ce programme (./dm k >> sat) dans un fichier (ex: sat) pour pouvoir l'utiliser avec le solveur.
-Pour utiliser le solveur il faut avoir le fichier sat (la sortie du programme précédent) puis utiliser ./glucose_static sat val, ou val sera la valuation des litteraux si la formule est satisfiable.
-Si la formule retourner par le solveur si elle est satisfiable il suffit de lancer ./dm v k pour avoir la profondeur dans l'arbre couvrant de chaque sommet.
+Utiliser ./dm k pour avoir la formule sat traduisant un arbre couvrant de hauteur k dans le graphe.
+Si le graphe n'est pas connexe, il n'a pas de formule sat car il ne peut pas y avoir d'arbre couvrant.
+Rediriger la sortie de ce programme (./dm k >> sat) dans un fichier (ex: sat) pour pouvoir l'utiliser avec le solveur.
+Pour utiliser le solveur il faut avoir le fichier sat (la sortie du programme précédent) puis utiliser ./glucose_static sat val, ou val sera la valuation des littéraux,
+retourné par le solveur, si la formule est satisfiable.
+Si elle est satisfiable, il suffit de lancer ./dm v k (il faut que le fichier val soit dans le même répertoire que l'exécutable), pour avoir la profondeur, dans l'arbre couvrant de hauteur k, de chaque sommet.

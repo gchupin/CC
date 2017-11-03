@@ -16,40 +16,36 @@
 
 \section {HAC est NP-difficile}
 \begin {itemize}
-\item Une réduction polynomiale du problème chemin hamiltonien vers le problème HAC serait de prendre le début de notre chemin hamiltonien comme la racine de l'abre et comme fils le suivant dans le chemin et ainsi de suite (on obtiendra un arbre couvrant en forme de ligne et de hauteur la taille du chemin hamiltonien).
-\item Le problème chemin hamiltonien étant NP-complet on en conclut que HAC est NP-difficile (car les réduction polynomiale sont transitive et que tout problème NP peut se réduire polynomialement en chemin hamiltonien, car il est NP complet)
+\item Une réduction polynomiale du problème chemin hamiltonien vers le problème HAC serait de prendre le début de notre chemin hamiltonien comme la racine de l'abre et comme fils le suivant dans le chemin et ainsi de suite (on obtiendra ainsi un arbre couvrant en forme de ligne et de hauteur la taille du chemin hamiltonien).
+\item Le problème chemin hamiltonien étant NP-complet on en conclut que HAC est NP-difficile (car les réductions polynomiale sont transitive et que tout problèmes NP peut se réduire polynomialement en chemin hamiltonien, car il est NP complet)
 \end {itemize}
 \section {Réduction de HAC vers SAT}
 \begin {enumerate}
-\item Pour chaque sommet v $\in$ V, il y a un unique entier h tq $x_{v,h}$ est vrai:
+\item Pour chaque sommet v $\in$ V, il y a au moins un entier h tq $x_{v,h}$ est vrai(Chaque sommet a au moins une hauteur dans l'arbre):
   \[
-  \bigwedge_{v \in V}\bigvee_{h=0}^nx_{v,h} \wedge\bigwedge_{v\in V}\bigwedge_{h\neq k}(\neg x_{v,h} \vee \neg x_{v,k})
+  \bigwedge_{v \in V}\bigvee_{h=0}^nx_{v,h}
+  \]
+\item  Pour chaque sommet v $\in$ V, il y a au plus un entier h tq $x_{v,h}$ est vrai(Chaque sommet n'a qu'une hauteur dans l'arbre).
+  \[
+  \bigwedge_{v\in V}\bigwedge_{h\neq k}(\neg x_{v,h} \vee \neg x_{v,k})
   \]
 \item Il y a un unique sommet v tq d(v) = 0 (``v est la racine''):
   \[
-  \bigvee_{v\in V}x_{v,0} \wedge \bigwedge_{v\neq w}(\neg x_{v,0} \vee \neg x_{w,0})
+  \bigwedge_{v\neq w}(\neg x_{v,0} \vee \neg x_{w,0})
   \]
-\item Il y a au moins un sommet v tq d(v) = k:
+\item Il y a au moins un sommet v tq d(v) = k(Il y a au moins un sommet par hauteur):
   \[
   \bigwedge_{k=0}^{n}\bigvee_{v\in V}x_{v,k}
   \]
-\item Pour chaque sommet v, si d(v) > 0, alors il existe un sommet u tel que uv $\in$ E et d(u) = d(v) - 1 (``le sommet u est un parent potentiel de v dans l'arbre''):
+\item Pour chaque sommet v, si d(v) > 0, alors il existe un sommet u tel que uv $\in$ E et d(u) = d(v) - 1 (``le sommet u est un parent potentiel de v dans l'arbre'')(donc si u est parent de v dans l'arbre alors u et v sont voisins dans le graphe):
   \[
-  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \vee x_{u,h-1})
+  \bigwedge_{v\in V}\bigwedge_{h=1}^n\bigvee_{uv\in E}(\neg x_{v,h}\vee x_{u,h-1})
   \]
-   \[
-  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(\neg x_{v,h} \vee x_{u,h-1})
-  \]
-   \[
-  \bigwedge_{v\in V}\bigwedge_{uv\in E}\bigvee_{h=1}^n(x_{v,h} \vee \neg x_{u,h-1})
-  \]
-   \[
-  \bigwedge_{v\in V}\bigwedge_{u\neq w}^{uv\in E \wedge wv\in E}\bigvee_{h=1}^n(\neg x_{v,h} \vee \neg x_{u,h-1} \neg x_{w,h-1})
-  \]
-  mabite
-  \[
-  \bigwedge_{v \in V}\bigvee_{h=1}^{n} x_{v,h} \wedge \bigwedge_{u \in V}^{uv \in E}\bigvee_{l=h-1} x_{u,l}
-  \]
-  
 \end {enumerate}
+
+Toute ces clauses nous garantissent d'avoir la réduction de sat vers HAC car on a bien une seul racine puis il y a au moins 1 sommet sur toute les profondeurs recherché ensuite chaque sommet du graphe est dans l'arbre et chaque arrête de l'arbre correspond bien a une arrête du graphe.\newline
+De plus, la réduction est polynomiale car chaque clause est bornée par un polynome.\newline
+Une optimisation, utilisé pour la 2ème clause est de prendre k~>~h (ainsi on ne traite pas deux fois le même couple de litteraux). On peut aussi résuire le nombre de litteraux de la 5ème clause en n'affichant qu'une fois le litteral $\neg x_{v,h}$.
+
+
 \end{document}

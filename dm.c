@@ -108,7 +108,6 @@ void graphe_to_sat (int profondeur)
     fprintf(stderr, "Le graphe n'est pas connexe donc ne posséde aucun arbre couvrant\n");
     exit (EXIT_FAILURE);
   }
-  printf ("c\nc start with comments\nc\nc\n");  // Commentaires
   int size = orderG ();                         // Nombre de sommets du graphe
 
   int i, u, v, w, h, l, nb_clauses;             // Compteurs
@@ -118,12 +117,12 @@ void graphe_to_sat (int profondeur)
   int k = profondeur + 1;
   if (k > size)
     {
-      fprintf(stderr, "Le graphe ne peut pas avoir d'arbre couvrant de profondeur supérieur a son nombre de sommet");
+      fprintf(stderr, "Le graphe ne peut pas avoir d'arbre couvrant de profondeur supérieur a son nombre de sommet: %d", size);
       exit (EXIT_FAILURE);
     }
   for (i = 1; i < k; ++i)
       sum += i;
-
+  printf ("c\nc start with comments\nc\nc\n");    // Commentaires
   nb_clauses =  (size + (pow(k, 2)*size - size*k - sum*size) + (pow(size, 2) - size) + k + (size*(k-1)));
   printf ("p cnf %d %d\n", size*k, nb_clauses);
 

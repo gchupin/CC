@@ -116,6 +116,11 @@ void graphe_to_sat (int profondeur)
   /* Sum 1 -> k -1 */
   int sum = 0;
   int k = profondeur + 1;
+  if (k > size)
+    {
+      fprintf(stderr, "Le graphe ne peut pas avoir d'arbre couvrant de profondeur supérieur a son nombre de sommet");
+      exit (EXIT_FAILURE);
+    }
   for (i = 1; i < k; ++i)
       sum += i;
 

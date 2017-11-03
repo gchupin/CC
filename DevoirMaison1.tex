@@ -42,10 +42,23 @@
   \bigwedge_{v\in V}\bigwedge_{h=1}^n\bigvee_{uv\in E}(\neg x_{v,h}\vee x_{u,h-1})
   \]
 \end {enumerate}
+\newpage
+Toute ces clauses nous garantissent d'avoir la réduction de sat vers HAC, car on a bien une seul racine, puis il y a au moins 1 sommet sur toute les profondeurs
+recherché, ensuite chaque sommet du graphe est dans l'arbre et chaque arrête de l'arbre correspond bien a une arrête du graphe.\newline
+De plus, la réduction est polynomiale, car chaque clause est bornée par un polynome.\newline
+En effet:
+\begin {itemize}
+\item La première clause est bornée par le nombre de sommet.
+\item La seconde clause est bornée par le nombre de sommet * $n^2$(n étant la profondeur de l'arbre couvrant) qui est polynomiale si n n'est pas trop grand(et n ne peut pas être supérieur au nombre de sommet sinon il ne peut assurément pas y avoir d'arbre couvrant de hauteur n).
+\item La troisième clause est bornée par le nombre de sommet au carré.
+\item La quatrième clause est bornée par n.
+\item La cinquième clause est bornée par le nombre de sommet * n
+\end {itemize}
 
-Toute ces clauses nous garantissent d'avoir la réduction de sat vers HAC car on a bien une seul racine puis il y a au moins 1 sommet sur toute les profondeurs recherché ensuite chaque sommet du graphe est dans l'arbre et chaque arrête de l'arbre correspond bien a une arrête du graphe.\newline
-De plus, la réduction est polynomiale car chaque clause est bornée par un polynome.\newline
-Une optimisation, utilisé pour la 2ème clause est de prendre k~>~h (ainsi on ne traite pas deux fois le même couple de litteraux). On peut aussi résuire le nombre de litteraux de la 5ème clause en n'affichant qu'une fois le litteral $\neg x_{v,h}$.
+\section {Optimisations}
+Une optimisation utilisé pour la 2ème clause, est de prendre k~>~h (ainsi on ne traite pas deux fois le même couple de litteraux). On peut aussi résuire le nombre de litteraux de la 5ème clause en n'affichant qu'une fois le litteral $\neg x_{v,h}$.\newline
+Une optimisation utilisé dans le code, est de faire un parcours en profondeur, pour tester si le graphe est connexe et si il ne l'est pas, on ne fait pas la réduction, car il ne peut pas y avoir d'arbre couvrant dans un graphe qui n'est pas connexe.
+On teste aussi que la profondeur, rentré par l'utilisateur, soit inférieur au nombre de sommet du graphe (car un graphe ne peut pas avoir un arbre couvrant de profondeur supérieur à sont nombre de sommet).
 
 
 \end{document}

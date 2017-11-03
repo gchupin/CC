@@ -17,12 +17,19 @@ typedef struct PileSommet
   int taille;
 }Pile;
 
+/*
+* Initialisation de la pile de sommet
+*/
 void initialisation (Pile* pile)
 {
   pile->debut = NULL;
   pile->taille = 0;
 }
 
+/*
+* Empiler un sommet
+* Retourne -1 si l'allocation du sommet échoue sinon 0 (tout ce passe bien)
+*/
 int empiler (Pile* pile, int sommet)
 {
   Sommet* nouveau_sommet;
@@ -35,6 +42,10 @@ int empiler (Pile* pile, int sommet)
   return 0;
 }
 
+/*
+* Depiler un sommet
+* Retourne -1 si il n'y a aucun sommet dans la pile sinon retourne la valeur du sommet après l'avoir enlevé de la pile
+*/
 int depiler (Pile* pile)
 {
   if (pile->taille == 0)
@@ -47,6 +58,10 @@ int depiler (Pile* pile)
   return ret;
 }
 
+/*
+* Parcours en profondeur du graphe pour voir si il est connexe
+* Retourne 0 si il n'est pas connexe et 1 sinon
+*/
 int connexe ()
 {
   Pile* pile = (Pile*) malloc(sizeof (Pile));
@@ -74,14 +89,15 @@ int connexe ()
       return 0;
   return 1;
 }
-/* Print un littéral */
+
+/* Affiche le littéral l */
 void p_litteral (int l)
 {
   printf ("%d ", l);
 }
 
 /*
- * Convertit le graphe en formule sat pour HAC
+ * Convertit le graphe en formule sat pour HAC.
  * La formule SAT est écrite dans le terminal par défault
  * Il faudra donc la rediriger vers un fichier si besoin.
  */
@@ -95,19 +111,16 @@ void graphe_to_sat (int profondeur)
   printf ("c\nc start with comments\nc\nc\n");  // Commentaires
   int size = orderG ();                         // Nombre de sommets du graphe
 
-  /*Pour l'affichage des littéraux(de la forme nk avec n numéro de sommet et k une profondeur)*/
-  //int m = (int)log10(k) + 1;
-  //m = pow(10, m);
-
   int i, u, v, w, h, l, nb_clauses;             // Compteurs
 
-  /* Sum 1 -> size -1 */
+  /* Sum 1 -> k -1 */
   int sum = 0;
   int k = profondeur + 1;
   for (i = 1; i < k; ++i)
       sum += i;
+
   nb_clauses =  (size + (pow(k, 2)*size - size*k - sum*size) + (pow(size, 2) - size) + k + (size*(k-1)));
-  printf ("p cnf %d %d\n", size*k, nb_clauses);         // Littéraux  !TODO
+  printf ("p cnf %d %d\n", size*k, nb_clauses);
 
   /* Il existe au moins une hauteur par sommet */
   for (v = 0; v < size; ++v) //nb_clause: size
@@ -116,6 +129,7 @@ void graphe_to_sat (int profondeur)
 	p_litteral (k*v+h+1);
       printf ("0\n");                            // Fin de ligne
     }
+
   /* Il existe au plus une hauteur par sommet */
   for (v = 0; v < size; ++v)                   //nb_clause: size*k² - size*k - somme(1 à k-1)*size
     for (h = 0; h < k; ++h)
@@ -126,6 +140,7 @@ void graphe_to_sat (int profondeur)
 	    p_litteral (-(k*v+l+1));
 	    printf ("0\n");                     // Fin de ligne
 	  }
+
   /* Il existe un unique sommet v tel que d(v) = 0 */
   for (v = 0; v < size; ++v)
     for (u = 0; u < size; ++u) // nb_clauses : size² - size
@@ -135,6 +150,7 @@ void graphe_to_sat (int profondeur)
 	  p_litteral (-(u*k+1));
 	  printf ("0\n");                       // Fin de ligne
 	}
+
   /* Il existe au moins un sommet v tel que d(v) = k */
   for (h = 0; h < k; ++h) //nb_clause: k
     {
@@ -143,50 +159,30 @@ void graphe_to_sat (int profondeur)
     printf("0\n");
     }
 
-  /* 1 */
+  /* Un des voisins du sommet v est sont parent dans l'arbre couvrant*/
   int print = 0;
   for (v = 0; v < size; ++v)
     for (h = 1; h < k; ++h)//nb_clause: size*(k-1)
       {
-	p_litteral (-(k*v+h+1));
-	for (u = 0; u < size; ++u)
-	  if (are_adjacent (u, v))
-	    {
-	      print = 1;
-
-	      p_litteral (k*u+h);
-	    }
-	if (print)
-	  {
-	    printf ("0\n");
-	    print = 0;
-	  }
-  }
-
-  /* 4
-  for (v = 0; v < size; ++v)//nb sommets
-    for (u = 0; u < size; ++u)
-      for (w = 0; w < size; ++w)
-	{
-	  if (w != u && u != v)
-	    if (are_adjacent (v, u) && are_adjacent (v, w))
-	      {
-		for (h = 1; h < k; ++h)
-		  {
-		    p_litteral (-(k*v+h+1));
-		    p_litteral (-(k*u+(h)));
-		    p_litteral (-(k*w+(h)));
-		    ++cpt;
-		    printf ("0\n");
-		  }
-	      }
-	}*/
-
+	       p_litteral (-(k*v+h+1));
+	        for (u = 0; u < size; ++u)
+	         if (are_adjacent (u, v))
+	          {
+	             print = 1;
+               p_litteral (k*u+h);
+	           }
+	         if (print)
+	          {
+	             printf ("0\n");
+	              print = 0;
+            }
+        }
 }
 
 /*
 * Convertit la valuation retourné par le solveur en HAC
-* La valuation doit être écrite dans un fichier nommé val
+* La valuation doit être écrite dans un fichier nommé val situé dans le même répertoire
+* Retourne pour chaque sommet leur profondeur dans HAC.
 */
 void val_to_hac (int k)
 {
@@ -216,7 +212,6 @@ void val_to_hac (int k)
     int h = 1;
     ++k;
     int sommet, profondeur;
-  //  printf("sommet: %d a la hauteur: %d\n",  tab[i]/k, tab[i]);
     for (int i = 0; i < size; ++i)
       {
 	profondeur = tab[i] - h;
@@ -232,9 +227,9 @@ void val_to_hac (int k)
 int main(int argc, char* argv [])
 {
   /* Pas assez ou trop d'arguments */
-  if (argc < 2)
+  if (argc < 2 || argc > 3)
     {
-      fprintf (stderr, "Pas assez d'arguments.\n");
+      fprintf (stderr, "Nombre d'arguments incorrect (tapez ./dm -help).\n");
       exit (EXIT_FAILURE);
     }
   else if (argc == 2)

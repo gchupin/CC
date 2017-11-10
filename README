@@ -6,3 +6,5 @@ Rediriger la sortie de ce programme (./dm k >> sat) dans un fichier (ex: sat) po
 Pour utiliser le solveur il faut avoir le fichier sat (la sortie du programme précédent) puis utiliser ./glucose_static sat val, ou val sera la valuation des littéraux,
 retourné par le solveur, si la formule est satisfiable.
 Si elle est satisfiable, il suffit de lancer ./dm v k (il faut que le fichier val soit dans le même répertoire que l'exécutable), pour avoir la profondeur, dans l'arbre couvrant de hauteur k, de chaque sommet.
+Il est possible de compiler rapidement avec le sript cc, il suffit juste d'entrer un nom de fichier en paramètre (le script ne gère pas les cas d'erreur)
+exemple : ./cc G69
